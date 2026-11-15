@@ -5,15 +5,14 @@ from __future__ import annotations
 
 import json
 import uuid
-from typing import Dict
 
 from fastapi import APIRouter, WebSocket, WebSocketDisconnect
 
 ws_router = APIRouter()
 
 # Connected clients
-device_sockets: Dict[str, WebSocket] = {}
-voice_sockets: Dict[str, WebSocket] = {}
+device_sockets: dict[str, WebSocket] = {}
+voice_sockets: dict[str, WebSocket] = {}
 
 @ws_router.websocket("/ws/device/{device_id}")
 async def device_ws(websocket: WebSocket, device_id: str):
@@ -29,7 +28,7 @@ async def device_ws(websocket: WebSocket, device_id: str):
             for vs in voice_sockets.values():
                 try:
                     await vs.send_text(json.dumps({"from": device_id, **msg}))
-                except:
+                except Exception:
                     pass
             # Echo ack
             await websocket.send_text(json.dumps({"type": "ack", "id": msg.get("id")}))
@@ -67,7 +66,7 @@ async def voice_ws(websocket: WebSocket):
                 for ds in device_sockets.values():
                     try:
                         await ds.send_text(json.dumps({"type": "execute", "text": text}))
-                    except:
+                    except Exception:
                         pass
                 await websocket.send_text(json.dumps({
                     "type": "agent_response",

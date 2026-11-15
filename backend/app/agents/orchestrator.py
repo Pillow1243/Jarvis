@@ -6,11 +6,10 @@ from __future__ import annotations
 
 import json
 import uuid
-from typing import Any, Dict, List, Optional
+from typing import Any
 
 from app.llm.router import get_llm_router
-from app.tools.registry import get_all_tools, execute_tool
-
+from app.tools.registry import execute_tool, get_all_tools
 
 SYSTEM_PROMPT = """تو جارویس هستی — دستیار هوشمند فوق‌العاده برای اندروید.
 
@@ -39,7 +38,7 @@ class OrchestratorAgent:
         self.device_id = device_id
         self.conversation_id = conversation_id or str(uuid.uuid4())
         self.llm = get_llm_router()
-        self.history: List[Dict[str, Any]] = [{"role": "system", "content": SYSTEM_PROMPT}]
+        self.history: list[dict[str, Any]] = [{"role": "system", "content": SYSTEM_PROMPT}]
 
     async def chat(
         self,
@@ -47,7 +46,7 @@ class OrchestratorAgent:
         tools_enabled: bool = True,
         model: str = "jarvis-auto",
         stream: bool = False,
-    ) -> Dict[str, Any]:
+    ) -> dict[str, Any]:
         self.history.append({"role": "user", "content": user_message})
 
         tools = get_all_tools() if tools_enabled else None

@@ -1,10 +1,10 @@
+
 from fastapi import APIRouter
 from pydantic import BaseModel
-from typing import List
 
 router = APIRouter()
 
-_skills: List[dict] = []
+_skills: list[dict] = []
 
 class InstallRequest(BaseModel):
     source: str  # e.g. hermes:arxiv, github:user/repo, openclaw:...

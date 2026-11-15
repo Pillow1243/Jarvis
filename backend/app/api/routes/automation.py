@@ -1,11 +1,12 @@
-from fastapi import APIRouter
+import time
+import uuid
+
+from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
-from typing import Optional, List
-import uuid, time
 
 router = APIRouter()
 
-_automations: List[dict] = []
+_automations: list[dict] = []
 
 class AutomationCreate(BaseModel):
     name: str
@@ -36,4 +37,4 @@ async def toggle_automation(automation_id: str):
         if a["id"] == automation_id:
             a["enabled"] = not a["enabled"]
             return a
-    return {"error": "not found"}
+    raise HTTPException(status_code=404, detail="Automation not found")

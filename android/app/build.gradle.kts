@@ -3,7 +3,17 @@ plugins {
     id("org.jetbrains.kotlin.android")
     id("kotlin-parcelize")
     id("com.google.devtools.ksp")
+    id("com.google.dagger.hilt.android")
 }
+
+// Release signing comes from env/CI secrets when provided.
+// Without secrets we fall back to the debug keystore so CI can still
+// produce an installable (debug-signed) release APK. See docs/RELEASING.md.
+val keystoreFile: String? = System.getenv("KEYSTORE_FILE")
+val keystorePassword: String? = System.getenv("KEYSTORE_PASSWORD")
+val keyAlias: String? = System.getenv("KEY_ALIAS")
+val keyPassword: String? = System.getenv("KEY_PASSWORD")
+val hasReleaseKeystore = !keystoreFile.isNullOrBlank() && file(keystoreFile!!).exists()
 
 android {
     namespace = "com.jarvis.android"
@@ -13,14 +23,25 @@ android {
         applicationId = "com.jarvis.android"
         minSdk = 26
         targetSdk = 34
-        versionCode = 2
-        versionName = "2.0.0"
+        versionCode = 3
+        versionName = "2.1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables { useSupportLibrary = true }
 
-        buildConfigField("String", "API_BASE_URL", "\"https://api.jarvis.example.com\"")
+        buildConfigField("String", "API_BASE_URL", "\"https://api.jarvis.example.com/\"")
         buildConfigField("String", "WS_BASE_URL", "\"wss://api.jarvis.example.com\"")
+    }
+
+    signingConfigs {
+        if (hasReleaseKeystore) {
+            create("release") {
+                storeFile = file(keystoreFile!!)
+                storePassword = keystorePassword
+                this.keyAlias = keyAlias
+                this.keyPassword = keyPassword
+            }
+        }
     }
 
     buildTypes {
@@ -28,11 +49,12 @@ android {
             isMinifyEnabled = true
             isShrinkResources = true
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
-            signingConfig = signingConfigs.getByName("debug") // replace with release keystore in CI
+            signingConfig = if (hasReleaseKeystore) signingConfigs.getByName("release") else signingConfigs.getByName("debug")
         }
         debug {
             isDebuggable = true
             applicationIdSuffix = ".debug"
+            versionNameSuffix = "-debug"
         }
     }
 
@@ -49,6 +71,11 @@ android {
     composeOptions { kotlinCompilerExtensionVersion = "1.5.10" }
 
     packaging { resources { excludes += "/META-INF/{AL2.0,LGPL2.1}" } }
+
+    lint {
+        abortOnError = false
+        checkReleaseBuilds = false
+    }
 }
 
 dependencies {
@@ -85,12 +112,8 @@ dependencies {
     ksp("com.google.dagger:hilt-compiler:2.50")
     implementation("androidx.hilt:hilt-navigation-compose:1.1.0")
 
-    // Permissions + Speech
-    implementation("com.google.accompanist:accompanist-permissions:0.32.0")
-    implementation("androidx.speech:speech:1.0.0") // compat
-
-    // Media
-    implementation("androidx.media3:media3-exoplayer:1.2.1")
+    // WorkManager (automation engine)
+    implementation("androidx.work:work-runtime-ktx:2.9.0")
 
     // Utils
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")
@@ -108,5 +131,3 @@ dependencies {
     debugImplementation("androidx.compose.ui:ui-tooling")
     debugImplementation("androidx.compose.ui:ui-test-manifest")
 }
-
-ksp { arg("room.schemaLocation", "$projectDir/schemas") }

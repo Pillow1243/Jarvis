@@ -45,8 +45,13 @@ class JarvisAccessibilityService : AccessibilityService() {
             // Keep last screen snapshot for read_screen
             try {
                 val root = rootInActiveWindow ?: return
-                lastScreenText = dumpNode(root, 0)
-            } catch (e: Exception) { /* ignore */ }
+                try {
+                    lastScreenText = dumpNode(root, 0)
+                } finally {
+                    @Suppress("DEPRECATION")
+                    root.recycle()
+                }
+            } catch (_: Exception) { /* keep last snapshot */ }
         }
     }
 
@@ -69,20 +74,43 @@ class JarvisAccessibilityService : AccessibilityService() {
 
     fun tapOnText(text: String): Boolean {
         val root = rootInActiveWindow ?: return false
-        val node = findByText(root, text) ?: return false
-        return node.performAction(AccessibilityNodeInfo.ACTION_CLICK)
+        return try {
+            val node = findByText(root, text) ?: return false
+            try {
+                node.performAction(AccessibilityNodeInfo.ACTION_CLICK)
+            } finally {
+                if (node !== root) {
+                    @Suppress("DEPRECATION")
+                    node.recycle()
+                }
+            }
+        } finally {
+            @Suppress("DEPRECATION")
+            root.recycle()
+        }
     }
 
     fun typeText(text: String, submit: Boolean = false): Boolean {
         val root = rootInActiveWindow ?: return false
-        val focused = findFocusedEditText(root) ?: return false
-        val args = Bundle().apply { putCharSequence(AccessibilityNodeInfo.ACTION_ARGUMENT_SET_TEXT_CHARSEQUENCE, text) }
-        val ok = focused.performAction(AccessibilityNodeInfo.ACTION_SET_TEXT, args)
-        if (submit && ok) {
-            // Send ENTER
-            focused.performAction(AccessibilityNodeInfo.ACTION_IME_ENTER)
+        return try {
+            val focused = findFocusedEditText(root) ?: return false
+            try {
+                val args = Bundle().apply { putCharSequence(AccessibilityNodeInfo.ACTION_ARGUMENT_SET_TEXT_CHARSEQUENCE, text) }
+                val ok = focused.performAction(AccessibilityNodeInfo.ACTION_SET_TEXT, args)
+                if (submit && ok) {
+                    focused.performAction(AccessibilityNodeInfo.ACTION_IME_ENTER)
+                }
+                ok
+            } finally {
+                if (focused !== root) {
+                    @Suppress("DEPRECATION")
+                    focused.recycle()
+                }
+            }
+        } finally {
+            @Suppress("DEPRECATION")
+            root.recycle()
         }
-        return ok
     }
 
     fun swipe(x1: Int, y1: Int, x2: Int, y2: Int, duration: Int = 300): Boolean {
@@ -127,13 +155,23 @@ class JarvisAccessibilityService : AccessibilityService() {
 
     fun readScreen(): String {
         val root = rootInActiveWindow ?: return lastScreenText.ifEmpty { "No window" }
-        return dumpNode(root, 0)
+        return try {
+            dumpNode(root, 0)
+        } finally {
+            @Suppress("DEPRECATION")
+            root.recycle()
+        }
     }
 
     // ── Helpers ───────────────────────────────────────────────────
 
     private fun dumpNode(node: AccessibilityNodeInfo, depth: Int): String {
         val sb = StringBuilder()
+        dumpNodeInto(node, depth, sb)
+        return sb.toString()
+    }
+
+    private fun dumpNodeInto(node: AccessibilityNodeInfo, depth: Int, sb: StringBuilder) {
         val indent = "  ".repeat(depth)
         val text = node.text?.toString()
         val desc = node.contentDescription?.toString()
@@ -141,20 +179,27 @@ class JarvisAccessibilityService : AccessibilityService() {
         val cls = node.className?.toString()?.substringAfterLast('.')
         if (!text.isNullOrBlank() || !desc.isNullOrBlank() || cls == "Button") {
             sb.appendLine("$indent- [$cls] text=\"$text\" desc=\"$desc\" id=$id clickable=${node.isClickable}")
-            node.text?.let { }
         }
         for (i in 0 until node.childCount) {
-            node.getChild(i)?.let { sb.append(dumpNode(it, depth + 1)) }
+            val child = node.getChild(i) ?: continue
+            try {
+                dumpNodeInto(child, depth + 1, sb)
+            } finally {
+                @Suppress("DEPRECATION")
+                child.recycle()
+            }
         }
-        return sb.toString()
     }
 
     private fun findByText(node: AccessibilityNodeInfo, text: String): AccessibilityNodeInfo? {
         if (node.text?.toString()?.contains(text, ignoreCase = true) == true) return node
         if (node.contentDescription?.toString()?.contains(text, ignoreCase = true) == true) return node
         for (i in 0 until node.childCount) {
-            val found = node.getChild(i)?.let { findByText(it, text) }
+            val child = node.getChild(i) ?: continue
+            val found = findByText(child, text)
             if (found != null) return found
+            @Suppress("DEPRECATION")
+            child.recycle()
         }
         return null
     }
@@ -163,8 +208,11 @@ class JarvisAccessibilityService : AccessibilityService() {
         if (node.isFocused && node.className?.contains("EditText") == true) return node
         if (node.isEditable) return node
         for (i in 0 until node.childCount) {
-            val found = node.getChild(i)?.let { findFocusedEditText(it) }
+            val child = node.getChild(i) ?: continue
+            val found = findFocusedEditText(child)
             if (found != null) return found
+            @Suppress("DEPRECATION")
+            child.recycle()
         }
         return null
     }

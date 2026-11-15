@@ -1,9 +1,7 @@
 """OpenAI-compatible chat completions + JARVIS endpoints"""
 from __future__ import annotations
 
-import time
-import uuid
-from typing import Any, Dict, List, Optional
+from typing import Any
 
 from fastapi import APIRouter, HTTPException
 from fastapi.responses import StreamingResponse
@@ -19,27 +17,27 @@ router = APIRouter()
 class ChatMessage(BaseModel):
     role: str
     content: str
-    tool_calls: Optional[List[Dict[str, Any]]] = None
-    tool_call_id: Optional[str] = None
+    tool_calls: list[dict[str, Any]] | None = None
+    tool_call_id: str | None = None
 
 
 class ChatCompletionRequest(BaseModel):
     model: str = "jarvis-auto"
-    messages: List[ChatMessage]
-    tools: Optional[List[Dict[str, Any]]] = None
-    tool_choice: Optional[str] = None
+    messages: list[ChatMessage]
+    tools: list[dict[str, Any]] | None = None
+    tool_choice: str | None = None
     stream: bool = False
     temperature: float = 0.7
     max_tokens: int = 2048
     device_id: str = "default"
-    conversation_id: Optional[str] = None
+    conversation_id: str | None = None
 
 
 class AskRequest(BaseModel):
     message: str
     model: str = "jarvis-auto"
     device_id: str = "default"
-    conversation_id: Optional[str] = None
+    conversation_id: str | None = None
     stream: bool = False
 
 
@@ -67,7 +65,7 @@ async def chat_completions(req: ChatCompletionRequest):
         result["jarvis"] = {"device_id": req.device_id, "conversation_id": req.conversation_id}
         return result
     except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+        raise HTTPException(status_code=500, detail="LLM request failed") from e
 
 
 @router.post("/ask")

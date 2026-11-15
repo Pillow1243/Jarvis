@@ -4,7 +4,7 @@
 
 <img src="assets/jarvis_horizontal_logo.png" width="800" alt="JARVIS — یار هوشمند شما"/>
 
-![JARVIS](https://img.shields.io/badge/JARVIS-v2.0.0-00D4FF?style=for-the-badge&logo=android&logoColor=white)
+![JARVIS](https://img.shields.io/badge/JARVIS-v2.1.0-00D4FF?style=for-the-badge&logo=android&logoColor=white)
 ![Android](https://img.shields.io/badge/Android-13%2B-3DDC84?style=for-the-badge&logo=android&logoColor=white)
 ![Kotlin](https://img.shields.io/badge/Kotlin-2.0-7F52FF?style=for-the-badge&logo=kotlin&logoColor=white)
 ![Compose](https://img.shields.io/badge/Jetpack_Compose-Material3-4285F4?style=for-the-badge&logo=jetpackcompose&logoColor=white)
@@ -57,6 +57,30 @@
 
 ---
 
+---
+
+## ✅ وضعیت واقعی پروژه (صداقت قبل از ادعا)
+
+ما اغراق نمی‌کنیم. این جدول صادقانه می‌گوید چه چیزی امروز واقعی است و چه چیزی در حال توسعه:
+
+| بخش | وضعیت | توضیح |
+|---|---|---|
+| Android UI (Compose + Material 3) | ✅ واقعی | ۸ صفحه کامل، بیلد و نصب می‌شود |
+| Backend FastAPI + OpenAI-compatible API | ✅ واقعی | تست‌شده (۲۶ تست)، `/docs` و `/metrics` واقعی |
+| ابزارهای Device Control (۳۰ ابزار) | ✅ واقعي در backend / 🟡 stub روی دستگاه | backend دستور را برای دستگاه صف می‌کند؛ اجرا روی خود گوشی با AccessibilityService پیاده می‌شود |
+| AccessibilityService (tap/type/read/swipe) | ✅ واقعی (با مجوز کاربر) | خواندن صفحه، کلیک، تایپ، سوایپ، گلوبال اکشن‌ها |
+| Notification Listener / Quick Tile / Widget | ✅ واقعی | ویجت هوم‌اسکرین و کاشی تنظیمات سریع |
+| Speech Recognition (STT) | ✅ واقعی (Android SpeechRecognizer) | فارسی و انگلیسی، نیازمند مجوز میکروفون |
+| TTS | ✅ واقعی (Android TextToSpeech) | صدای فارسی/انگلیسی |
+| Wake Word دائمی («هی جارویس» در پس‌زمینه) | 🟡 Stub | `WakeWordDetector` فعلی فقط transcript را تحلیل می‌کند؛ مدل on-device (openWakeWord/Vosk) در نقشه راه است |
+| HUD Overlay همیشه در دسترس | 🟡 واقعی اما ساده | کره قابل drag؛ کنترل صوتی مستقیم از HUD در حال توسعه |
+| On-device LLM (Ollama/MLC) | 🟡 Backend آماده | مسیریابی local→cloud در `app/llm/router.py`؛ نیازمند سرور Ollama |
+| Memory / RAG (vector DB) | 🟡 نسخه ساده | جستجوی substring در حافظه؛ ارتقا به vector store در نقشه راه |
+| اتوماسیون‌های زمان‌دار | ✅ واقعی (WorkManager) | `AutomationEngine`؛ دیسپچر سمت backend در حال توسعه |
+| APK ریلیز | ✅ واقعی و بازتولیدپذیر | ساخته‌شده با CI + Gradle واقعی؛ هیچ فایل placeholder در مخزن نیست |
+
+> آخرین بار این جدول در **v2.1.0** بازبینی و تأیید شد.
+
 ## 🚀 نصب سریع
 
 ### ۱) نصب APK (پیشنهادی)
@@ -78,7 +102,8 @@ cd Jarvis
 
 # Backend
 cd backend
-pip install -r requirements.txt
+python3 -m venv .venv && source .venv/bin/activate
+pip install -r requirements-dev.txt   # شامل pytest و ruff برای توسعه
 cp .env.example .env   # کلید API خود را بگذار (OpenAI / Ollama / Gemini)
 uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
 
@@ -173,7 +198,7 @@ client = openai.OpenAI(
 resp = client.chat.completions.create(
     model="jarvis-auto",  # مسیریابی هوشمند local/cloud
     messages=[{"role": "user", "content": "هی جارویس، فردا قرارهام چیه؟"}],
-    tools=[{"type": "function", "function": {"name": "device_control"}}]
+    tools=[{"type": "function", "function": {"name": "open_app"}}]
 )
 ```
 
@@ -241,12 +266,13 @@ curl -X POST http://localhost:8000/v1/skills/install \
 
 ## 📦 ریلیز و APK
 
-هر push به `main` یک APK جدید می‌سازد:
+هر push به `main` بیلد و تست واقعی را اجرا می‌کند و هر تگ `v*` یک [GitHub Release](../../releases) می‌سازد.
+APK ریلیز مستقیماً با Gradle واقعی در CI ساخته می‌شود و قبل از انتشار وجود `classes.dex` و حجم منطقی آن بررسی می‌شود؛ فایل‌ها به همراه **SHA-256** منتشر می‌شوند:
 
-- `jarvis-release.apk` — نسخه امضا شده
-- `jarvis-debug.apk` — نسخه دیباگ
+- `jarvis-vX.Y.Z-release.apk` — نسخه بهینه (R8) با امضای keystore پروژه (یا debug-signed وقتی secrets تنظیم نشده باشد)
+- `jarvis-vX.Y.Z-debug.apk` — نسخه دیباگ
 
-همچنین هر تگ `v*` یک [GitHub Release](../../releases) با APK + Changelog می‌سازد.
+انتشار با تگ: `git tag v2.1.0 && git push origin v2.1.0` — جزئیات در [docs/RELEASING.md](docs/RELEASING.md).
 
 ساخت دستی:
 
@@ -265,7 +291,7 @@ curl -X POST http://localhost:8000/v1/skills/install \
 - [x] **لوگوی اختصاصی** — HUD Orb نئونی + بنر فارسی «یار هوشمند شما»
 - [x] **رابط محشر** — Glassmorphism + VoiceWave + انیمیشن‌های 60fps + Splash/Onboarding 4 مرحله‌ای
 - [x] HUD Overlay + Permissions Hub
-- [x] APK Release via GitHub Actions (✅ بیلد پایدار با fallback)
+- [x] APK Release via GitHub Actions — بیلد واقعی Gradle + تأیید سلامت APK (بدون فایل ساختگی)
 - [ ] On-Device LLM (MNN / MLC-LLM / Ollama Android)
 - [ ] WearOS App + Auto Integration
 - [ ] Tasker / MacroDroid Plugin

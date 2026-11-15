@@ -1,11 +1,9 @@
 package com.jarvis.android.ui.screens
 
 import androidx.compose.animation.core.*
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -16,7 +14,6 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -36,7 +33,7 @@ fun SplashScreen(nav: NavController) {
     LaunchedEffect(Unit) {
         delay(1400)
         nav.navigate(Screen.Onboarding.route) {
-            popUpTo(Screen.Onboarding.route) { inclusive = false }
+            popUpTo(Screen.Splash.route) { inclusive = true }
         }
     }
     Box(
@@ -62,7 +59,7 @@ fun SplashScreen(nav: NavController) {
             CircularProgressIndicator(color = JarvisColors.NeonCyan, strokeWidth = 2.dp, modifier = Modifier.size(28.dp))
         }
         Text(
-            "v2.0 • ساخته شده با ❤️ برای اندروید",
+            "v2.1 • ساخته شده با ❤️ برای اندروید",
             color = Color.White.copy(alpha = 0.4f),
             fontSize = 10.sp,
             modifier = Modifier.align(Alignment.BottomCenter).padding(bottom = 28.dp)

@@ -1,9 +1,10 @@
 """Device control & pairing endpoints"""
 from __future__ import annotations
 
-from typing import Any, Dict, List, Optional
+from typing import Any
+
 from fastapi import APIRouter
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 from app.tools.registry import execute_tool
 
@@ -11,18 +12,18 @@ router = APIRouter()
 
 class DeviceCommand(BaseModel):
     tool: str
-    arguments: Dict[str, Any] = {}
+    arguments: dict[str, Any] = Field(default_factory=dict)
     device_id: str = "default"
 
 class PairRequest(BaseModel):
     device_id: str
     name: str
     platform: str = "android"
-    fcm_token: Optional[str] = None
+    fcm_token: str | None = None
 
 # In-memory device registry (replace with DB in prod)
-_devices: Dict[str, Dict[str, Any]] = {}
-_pending_commands: Dict[str, List[Dict[str, Any]]] = {}
+_devices: dict[str, dict[str, Any]] = {}
+_pending_commands: dict[str, list[dict[str, Any]]] = {}
 
 @router.post("/pair")
 async def pair_device(req: PairRequest):
@@ -63,6 +64,6 @@ async def get_pending(device_id: str):
     return {"commands": cmds}
 
 @router.post("/{device_id}/result")
-async def post_result(device_id: str, body: Dict[str, Any]):
+async def post_result(device_id: str, body: dict[str, Any]):
     # Device reports execution result
     return {"status": "received", "device_id": device_id, "result": body}

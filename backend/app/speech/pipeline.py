@@ -1,5 +1,4 @@
 """Speech pipeline — STT/TTS stub for server-side processing"""
-from typing import Optional
 
 class SpeechPipeline:
     def transcribe(self, audio_bytes: bytes, lang: str = "fa") -> str:

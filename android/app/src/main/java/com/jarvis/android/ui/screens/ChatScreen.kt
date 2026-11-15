@@ -1,6 +1,5 @@
 package com.jarvis.android.ui.screens
 
-import androidx.compose.animation.*
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -9,7 +8,11 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.*
+import androidx.compose.material.icons.filled.Dashboard
+import androidx.compose.material.icons.filled.Mic
+import androidx.compose.material.icons.filled.Send
+import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material.icons.filled.Stop
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -21,6 +24,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.jarvis.android.ui.Screen
 import com.jarvis.android.ui.components.GlassCard
 import com.jarvis.android.ui.components.VoiceWave
 import com.jarvis.android.ui.theme.JarvisColors
@@ -29,6 +33,7 @@ import kotlinx.coroutines.launch
 
 data class ChatMessage(val id: String, val role: String, val text: String, val tools: List<String> = emptyList())
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ChatScreen(nav: NavController) {
     var input by remember { mutableStateOf("") }
@@ -41,21 +46,27 @@ fun ChatScreen(nav: NavController) {
     LaunchedEffect(Unit) {
         if (messages.isEmpty()) {
             messages = listOf(
-                ChatMessage("0", "assistant", "سلام! من **جارویس** هستم 🤖\n\nدستیار فوق‌العاده اندروید — با لوگوی اختصاصی و UI محشر!\n\n💡 امتحان کن:\n• «تلگرام رو باز کن»\n• «این صفحه رو بخون»\n• «به مامان پیام بده ساعت ۸ میرسم»\n• «هر روز ۷ صبح آب و هوا رو بگو»")
+                ChatMessage(
+                    "welcome", "assistant",
+                    "سلام! من جارویس هستم 🤖\n\nدستیار هوشمند اندروید شما.\n\n💡 امتحان کن:\n• «تلگرام رو باز کن»\n• «این صفحه رو بخون»\n• «به مامان پیام بده ساعت ۸ میرسم»\n• «هر روز ۷ صبح آب و هوا رو بگو»"
+                )
             )
         }
     }
 
+    // Auto-scroll to the newest message / thinking indicator
+    LaunchedEffect(messages.size, isThinking) {
+        val target = messages.size + (if (isThinking) 1 else 0)
+        if (target > 0) listState.animateScrollToItem(target)
+    }
+
     fun sendMessage(text: String) {
-        if (text.isBlank()) return
-        messages = messages + ChatMessage(System.currentTimeMillis().toString(), "user", text)
+        val trimmed = text.trim()
+        if (trimmed.isBlank()) return
+        messages = messages + ChatMessage(System.currentTimeMillis().toString(), "user", trimmed)
         input = ""
         isThinking = true
         scope.launch {
-            if (messages.isNotEmpty()) {
-                // auto-scroll
-                delay(100)
-            }
             delay(700)
             isThinking = false
             val replies = mapOf(
@@ -65,9 +76,10 @@ fun ChatScreen(nav: NavController) {
                 "سلام" to "سلام عزیز! 😊 چطور کمکت کنم؟ می‌تونی با صدا هم بگی «هی جارویس»",
                 "آب" to "🌤️ فردا تهران: آفتابی، ۲۷° — آلودگی متوسط. یادآوری تنظیم شد؟",
             )
-            val reply = replies.entries.firstOrNull { text.contains(it.key) }?.value
-                ?: "دریافت شد: «$text»\n\nدر اتصال واقعی به Backend (FastAPI) این پیام به Orchestrator می‌رود و با ابزارهای Device Control پاسخ می‌دهد.\n\nآدرس API را در تنظیمات وارد کن."
-            messages = messages + ChatMessage((System.currentTimeMillis()+1).toString(), "assistant", reply, tools = if (reply.contains("✅") || reply.contains("📖")) listOf("open_app","read_screen") else emptyList())
+            val reply = replies.entries.firstOrNull { trimmed.contains(it.key) }?.value
+                ?: "دریافت شد: «$trimmed»\n\nدر اتصال واقعی به Backend (FastAPI) این پیام به Orchestrator می‌رود و با ابزارهای Device Control پاسخ می‌دهد.\n\nآدرس API را در تنظیمات وارد کن."
+            val usedTools = if (reply.contains("✅")) listOf("open_app") else if (reply.contains("📖")) listOf("read_screen") else emptyList()
+            messages = messages + ChatMessage((System.currentTimeMillis() + 1).toString(), "assistant", reply, tools = usedTools)
         }
     }
 
@@ -76,19 +88,26 @@ fun ChatScreen(nav: NavController) {
             TopAppBar(
                 title = {
                     Row(verticalAlignment = Alignment.CenterVertically) {
-                        Box(Modifier.size(36.dp).clip(CircleShape).background(Brush.linearGradient(JarvisColors.GradientPrimary)), contentAlignment = Alignment.Center) {
+                        Box(
+                            Modifier.size(36.dp).clip(CircleShape).background(Brush.linearGradient(JarvisColors.GradientPrimary)),
+                            contentAlignment = Alignment.Center
+                        ) {
                             Text("J", color = Color.White, fontWeight = FontWeight.Black)
                         }
                         Spacer(Modifier.width(10.dp))
                         Column {
                             Text("JARVIS", fontWeight = FontWeight.Black, fontSize = 15.sp, letterSpacing = 1.sp)
-                            Text("آنلاین • لوگوی اختصاصی ✨", fontSize = 10.sp, color = JarvisColors.Success)
+                            Text("آنلاین", fontSize = 10.sp, color = JarvisColors.Success)
                         }
                     }
                 },
                 actions = {
-                    IconButton(onClick = { nav.navigate("dashboard") }) { Icon(Icons.Default.Dashboard, null) }
-                    IconButton(onClick = { nav.navigate("settings") }) { Icon(Icons.Default.Settings, null) }
+                    IconButton(onClick = { nav.navigate(Screen.Dashboard.route) }) {
+                        Icon(Icons.Default.Dashboard, contentDescription = "داشبورد")
+                    }
+                    IconButton(onClick = { nav.navigate(Screen.Settings.route) }) {
+                        Icon(Icons.Default.Settings, contentDescription = "تنظیمات")
+                    }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(containerColor = JarvisColors.DeepSpace)
             )
@@ -105,8 +124,20 @@ fun ChatScreen(nav: NavController) {
                     ) {
                         IconButton(
                             onClick = { isListening = !isListening },
-                            modifier = Modifier.size(48.dp).clip(CircleShape).background(if (isListening) Color(0xFFFF5252) else Brush.linearGradient(JarvisColors.GradientPrimary))
-                        ) { Icon(if (isListening) Icons.Default.Stop else Icons.Default.Mic, null, tint = Color.White) }
+                            modifier = Modifier
+                                .size(48.dp)
+                                .clip(CircleShape)
+                                .then(
+                                    if (isListening) Modifier.background(Color(0xFFFF5252))
+                                    else Modifier.background(Brush.linearGradient(JarvisColors.GradientPrimary))
+                                )
+                        ) {
+                            Icon(
+                                if (isListening) Icons.Default.Stop else Icons.Default.Mic,
+                                contentDescription = if (isListening) "توقف گوش دادن" else "گوش دادن",
+                                tint = Color.White
+                            )
+                        }
                         Spacer(Modifier.width(8.dp))
                         OutlinedTextField(
                             value = input, onValueChange = { input = it },
@@ -116,8 +147,11 @@ fun ChatScreen(nav: NavController) {
                         Spacer(Modifier.width(8.dp))
                         IconButton(
                             onClick = { sendMessage(input) },
-                            modifier = Modifier.size(48.dp).clip(CircleShape).background(Brush.linearGradient(listOf(JarvisColors.AccentPurple, JarvisColors.NeonCyan)))
-                        ) { Icon(Icons.Default.Send, null, tint = Color.White) }
+                            modifier = Modifier
+                                .size(48.dp)
+                                .clip(CircleShape)
+                                .background(Brush.linearGradient(listOf(JarvisColors.AccentPurple, JarvisColors.NeonCyan)))
+                        ) { Icon(Icons.Default.Send, contentDescription = "ارسال", tint = Color.White) }
                     }
                 }
             }
@@ -149,31 +183,46 @@ fun ChatScreen(nav: NavController) {
             ) {
                 item {
                     Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                        listOf("📱 تلگرام", "📖 بخون", "⏰ یادآوری", "🌤️ آب و هوا", "🎨 لوگو").forEach { q ->
-                            AssistChip(onClick = { sendMessage(q) }, label = { Text(q, fontSize = 11.sp) }, colors = AssistChipDefaults.assistChipColors(containerColor = JarvisColors.Glass, labelColor = Color.White))
+                        listOf("📱 تلگرام", "📖 بخون", "⏰ یادآوری", "🌤️ آب و هوا").forEach { q ->
+                            AssistChip(
+                                onClick = { sendMessage(q) },
+                                label = { Text(q, fontSize = 11.sp) },
+                                colors = AssistChipDefaults.assistChipColors(containerColor = JarvisColors.Glass, labelColor = Color.White)
+                            )
                         }
                     }
                 }
-                items(messages) { msg ->
+                items(messages, key = { it.id }) { msg ->
                     val isUser = msg.role == "user"
-                    Row(Modifier.fillMaxWidth(), horizontalArrangement = if (isUser) Arrangement.End else Arrangement.Start) {
-                        GlassCard(modifier = Modifier.widthIn(max = 320.dp)) {
-                            Text(msg.text, color = Color.White, fontSize = 13.sp, lineHeight = 18.sp)
-                            if (msg.tools.isNotEmpty()) {
-                                Spacer(Modifier.height(6.dp))
-                                msg.tools.forEach { t ->
-                                    Badge(containerColor = JarvisColors.NeonCyan, contentColor = Color.Black) { Text("🔧 $t", fontSize = 10.sp) }
+                    Row(
+                        Modifier.fillMaxWidth(),
+                        horizontalArrangement = if (isUser) Arrangement.End else Arrangement.Start
+                    ) {
+                        if (isUser) {
+                            Box(
+                                Modifier
+                                    .widthIn(max = 300.dp)
+                                    .clip(RoundedCornerShape(topStart = 18.dp, topEnd = 18.dp, bottomStart = 18.dp, bottomEnd = 4.dp))
+                                    .background(Brush.linearGradient(listOf(JarvisColors.NeonCyan, Color(0xFF0091EA))))
+                                    .padding(12.dp)
+                            ) {
+                                Text(msg.text, color = Color(0xFF04222E), fontSize = 13.sp, lineHeight = 19.sp, fontWeight = FontWeight.Medium)
+                            }
+                        } else {
+                            GlassCard(modifier = Modifier.widthIn(max = 320.dp)) {
+                                Text(msg.text, color = Color.White, fontSize = 13.sp, lineHeight = 18.sp)
+                                if (msg.tools.isNotEmpty()) {
+                                    Spacer(Modifier.height(6.dp))
+                                    Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+                                        msg.tools.forEach { t ->
+                                            Badge(containerColor = JarvisColors.NeonCyan, contentColor = Color.Black) {
+                                                Text("🔧 $t", fontSize = 10.sp)
+                                            }
+                                        }
+                                    }
                                 }
                             }
                         }
-                        // User bubble override
-                        if (isUser) {
-                            // Drawn via Card with different color — fallback handled above via GlassCard tint
-                        }
-                    }
-                    // Override for user with cyan bg
-                    if (msg.role == "user") {
-                        // Actually above already GlassCard for both; for user we want cyan bubble — re-render logic simplified
                     }
                 }
                 if (isThinking) {

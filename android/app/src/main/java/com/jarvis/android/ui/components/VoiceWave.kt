@@ -7,7 +7,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.unit.dp
 import com.jarvis.android.ui.theme.JarvisColors
 import kotlin.math.sin
@@ -38,7 +38,7 @@ fun VoiceWave(isActive: Boolean, modifier: Modifier = Modifier) {
                 start = Offset(x, h/2 - amp),
                 end = Offset(x, h/2 + amp),
                 strokeWidth = 4.dp.toPx(),
-                cap = Stroke.DefaultCap
+                cap = StrokeCap.Round
             )
         }
     }

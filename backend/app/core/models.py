@@ -1,10 +1,13 @@
 """SQLAlchemy models"""
 from __future__ import annotations
+
 from datetime import datetime
-from typing import Optional
-from sqlalchemy import String, Text, DateTime, Integer, Float, Boolean, func
+
+from sqlalchemy import Boolean, DateTime, Integer, String, Text, func
 from sqlalchemy.orm import Mapped, mapped_column
+
 from app.core.database import Base
+
 
 class User(Base):
     __tablename__ = "users"
@@ -27,7 +30,7 @@ class Message(Base):
     conversation_id: Mapped[int] = mapped_column(Integer)
     role: Mapped[str] = mapped_column(String(20))  # user/assistant/system/tool
     content: Mapped[str] = mapped_column(Text)
-    tool_calls: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
+    tool_calls: Mapped[str | None] = mapped_column(Text, nullable=True)
     created_at: Mapped[datetime] = mapped_column(DateTime, server_default=func.now())
 
 class Device(Base):
@@ -55,5 +58,5 @@ class MemoryEntry(Base):
     user_id: Mapped[str] = mapped_column(String(100), default="default")
     key: Mapped[str] = mapped_column(String(255))
     value: Mapped[str] = mapped_column(Text)
-    embedding: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
+    embedding: Mapped[str | None] = mapped_column(Text, nullable=True)
     created_at: Mapped[datetime] = mapped_column(DateTime, server_default=func.now())

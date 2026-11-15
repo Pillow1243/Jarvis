@@ -1,6 +1,11 @@
 #!/usr/bin/env bash
-set -e
-echo "🧪 Testing backend..."
-cd backend
-python -m pytest -q 2>/dev/null || python -c "from app.main import app; print('✅ Import OK')"
-echo "✅ Tests done"
+# Run backend test suite.
+set -euo pipefail
+ROOT="$(cd "$(dirname "$0")/.." && pwd)"
+cd "$ROOT/backend"
+
+if [[ ! -d .venv ]]; then
+  python3 -m venv .venv
+  ./.venv/bin/pip install -q -r requirements-dev.txt
+fi
+./.venv/bin/python -m pytest -v

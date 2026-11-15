@@ -1,6 +1,12 @@
 #!/usr/bin/env bash
-set -e
-echo "🔍 Linting..."
-pip install ruff -q || true
-ruff check backend/app --exit-zero || true
+# Lint backend (ruff) and Android sources (basic checks).
+set -euo pipefail
+ROOT="$(cd "$(dirname "$0")/.." && pwd)"
+
+echo "🔍 Ruff…"
+cd "$ROOT/backend"
+ruff check app tests
+
+echo "🔍 Gradle wrapper sanity…"
+test -f "$ROOT/android/gradle/wrapper/gradle-wrapper.jar" && echo "wrapper jar: OK"
 echo "✅ Lint done"

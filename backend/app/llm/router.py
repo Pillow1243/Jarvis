@@ -4,9 +4,8 @@ Routes to local (Ollama) or cloud (OpenAI/Anthropic/Gemini) based on task comple
 """
 from __future__ import annotations
 
-import os
+from collections.abc import AsyncIterator
 from enum import Enum
-from typing import AsyncIterator, List, Optional
 
 import httpx
 from loguru import logger
@@ -68,9 +67,9 @@ class LLMRouter:
 
     async def chat_completion(
         self,
-        messages: List[dict],
+        messages: list[dict],
         model: str = "jarvis-auto",
-        tools: Optional[List[dict]] = None,
+        tools: list[dict] | None = None,
         stream: bool = False,
         temperature: float = 0.7,
         max_tokens: int = 2048,
@@ -128,7 +127,7 @@ class LLMRouter:
                 "usage": {"prompt_tokens": 0, "completion_tokens": 0, "total_tokens": 0},
             }
 
-    def _mock_response(self, messages: List[dict]) -> dict:
+    def _mock_response(self, messages: list[dict]) -> dict:
         last_user = next((m["content"] for m in reversed(messages) if m["role"] == "user"), "سلام!")
         # Simple Persian-aware mock
         if any(kw in last_user for kw in ["سلام", "هی جارویس", "جارویس"]):
@@ -159,7 +158,7 @@ class LLMRouter:
         yield "data: [DONE]\n\n"
 
 
-_router_instance: Optional[LLMRouter] = None
+_router_instance: LLMRouter | None = None
 
 def get_llm_router() -> LLMRouter:
     global _router_instance

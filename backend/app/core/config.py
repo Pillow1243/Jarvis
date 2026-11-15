@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 from functools import lru_cache
-from typing import List, Optional
 
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
@@ -10,7 +9,7 @@ class Settings(BaseSettings):
     model_config = SettingsConfigDict(env_file=".env", env_file_encoding="utf-8", extra="allow")
 
     app_name: str = "JARVIS Android Backend"
-    app_version: str = "2.0.0"
+    app_version: str = "2.1.0"
     env: str = "production"
     log_level: str = "INFO"
 
@@ -19,9 +18,9 @@ class Settings(BaseSettings):
     access_token_expire_minutes: int = 1440
 
     # LLM
-    openai_api_key: Optional[str] = None
-    anthropic_api_key: Optional[str] = None
-    google_api_key: Optional[str] = None
+    openai_api_key: str | None = None
+    anthropic_api_key: str | None = None
+    google_api_key: str | None = None
     ollama_base_url: str = "http://localhost:11434"
     default_model: str = "jarvis-auto"
 
@@ -41,7 +40,7 @@ class Settings(BaseSettings):
     max_ws_connections: int = 100
 
     @property
-    def cors_origins_list(self) -> List[str]:
+    def cors_origins_list(self) -> list[str]:
         if self.cors_origins == "*":
             return ["*"]
         return [o.strip() for o in self.cors_origins.split(",")]

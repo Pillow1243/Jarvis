@@ -15,6 +15,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SettingsScreen(nav: NavController) {
     var apiUrl by remember { mutableStateOf("https://api.jarvis.example.com") }
@@ -32,7 +33,7 @@ fun SettingsScreen(nav: NavController) {
                 Text("تست اتصال", color = Color.Black)
             }
 
-            Divider()
+            HorizontalDivider()
             Text("🎙️ صدا", fontWeight = FontWeight.Bold, fontSize = 13.sp)
             Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
                 Text("Wake Word «هی جارویس»", fontSize = 13.sp)
@@ -48,11 +49,11 @@ fun SettingsScreen(nav: NavController) {
                 }
             }
 
-            Divider()
+            HorizontalDivider()
             Text("ℹ️ درباره", fontWeight = FontWeight.Bold, fontSize = 13.sp)
             Card(shape = RoundedCornerShape(14.dp), colors = CardDefaults.cardColors(containerColor = Color(0xFF141A2E))) {
                 Column(Modifier.padding(14.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
-                    Text("JARVIS Android v2.0.0", fontWeight = FontWeight.Bold, fontSize = 13.sp)
+                    Text("JARVIS Android v2.1.0", fontWeight = FontWeight.Bold, fontSize = 13.sp)
                     Text("Apache 2.0 • الهام‌گرفته از OpenJarvis (Stanford)", fontSize = 11.sp, color = Color.White.copy(alpha = 0.6f))
                     Text("github.com/Pillow1243/Jarvis", fontSize = 11.sp, color = Color(0xFF00D4FF))
                 }
