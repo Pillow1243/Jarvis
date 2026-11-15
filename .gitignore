@@ -1,0 +1,38 @@
+# Android
+*.iml
+.gradle
+/local.properties
+/.idea
+.DS_Store
+/build
+/captures
+.externalNativeBuild
+.cxx
+*.apk
+*.aab
+!releases/*.apk
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+.venv
+venv/
+.env
+*.db
+*.sqlite
+jarvis.db
+
+# Node (if any)
+node_modules/
+dist/
+
+# Secrets
+keystore.properties
+*.jks
+*.keystore
+google-services.json
+
+# OS
+Thumbs.db
+.DS_Store
