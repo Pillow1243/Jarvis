@@ -1,0 +1,24 @@
+<resources>
+    <string name="app_name">JARVIS</string>
+    <string name="jarvis_greeting">سلام، من جارویس هستم 👋</string>
+    <string name="tap_to_speak">برای صحبت ضربه بزن</string>
+    <string name="listening">دارم گوش می‌دم…</string>
+    <string name="thinking">جارویس داره فکر می‌کنه…</string>
+    <string name="permission_title">دسترسی‌های جارویس</string>
+    <string name="permission_desc">برای کنترل کامل گوشی، این دسترسی‌ها لازمند — همه اختیاری و قابل لغو هستند.</string>
+    <string name="accessibility_title">♿ دسترسی‌پذیری — کنترل صفحه</string>
+    <string name="accessibility_desc">خواندن صفحه، کلیک، تایپ و اتوماسیون هر اپ</string>
+    <string name="overlay_title">🖼️ نمایش روی سایر برنامه‌ها</string>
+    <string name="overlay_desc">کره شناور جارویس (HUD) — همیشه در دسترس</string>
+    <string name="notification_title">🔔 دسترسی به اعلان‌ها</string>
+    <string name="notification_desc">خواندن اعلان‌ها و پاسخ خودکار</string>
+    <string name="mic_title">🎤 میکروفون</string>
+    <string name="mic_desc">دستیار صوتی و Wake Word</string>
+    <string name="enable">فعال‌سازی</string>
+    <string name="enabled">✅ فعال</string>
+    <string name="chat_hint">به جارویس بگو… (مثلاً: تلگرام رو باز کن)</string>
+    <string name="settings">تنظیمات</string>
+    <string name="automations">اتوماسیون‌ها</string>
+    <string name="memory">حافظه</string>
+    <string name="dashboard">داشبورد</string>
+</resources>

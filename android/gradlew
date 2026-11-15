@@ -1,0 +1,18 @@
+#!/usr/bin/env sh
+# Simplified gradlew stub — in CI the real wrapper is generated via `gradle wrapper`
+# This stub allows local `./gradlew` to work if Gradle is installed
+
+set -e
+GRADLE_VERSION="8.6"
+if command -v gradle >/dev/null 2>&1; then
+  exec gradle "$@"
+else
+  echo "Gradle not found. Install Gradle 8.6 or run in CI with setup-java + setup-android."
+  echo "Attempting to use wrapper jar if present..."
+  if [ -f "gradle/wrapper/gradle-wrapper.jar" ]; then
+    java -jar gradle/wrapper/gradle-wrapper.jar "$@"
+  else
+    echo "❌ No Gradle available. CI will generate wrapper via 'gradle wrapper'."
+    exit 1
+  fi
+fi

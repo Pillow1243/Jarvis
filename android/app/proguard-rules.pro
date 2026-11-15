@@ -1,0 +1,3 @@
+-keep class com.jarvis.android.** { *; }
+-keep class retrofit2.** { *; }
+-keepattributes Signature, InnerClasses, EnclosingMethod
