@@ -26,7 +26,7 @@
 - ✨ AccessibilityService: ریسایکل صحیح nodeها (نشت حافظه برطرف شد)
 - ✨ ویجت: کلیک روی ویجت حالا واقعاً اپ را باز می‌کند
 - ✨ دکمه‌های محتوایی (contentDescription) برای دسترسی‌پذیری بهتر
-- 🏷️ versionName 2.1.0 (versionCode 4)
+- 🏷️ versionName 2.2.0 (versionCode 4)
 
 ### 🧠 Backend
 - ✅ وابستگی‌ها slim شد (chromadb/sentence-transformers/celery/redis حذف — ~۲GB سبک‌تر)
