@@ -9,7 +9,7 @@ class Settings(BaseSettings):
     model_config = SettingsConfigDict(env_file=".env", env_file_encoding="utf-8", extra="allow")
 
     app_name: str = "JARVIS Android Backend"
-    app_version: str = "2.1.0"
+    app_version: str = "2.2.0"
     env: str = "production"
     log_level: str = "INFO"
 

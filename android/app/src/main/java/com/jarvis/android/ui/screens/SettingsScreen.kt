@@ -53,7 +53,7 @@ fun SettingsScreen(nav: NavController) {
             Text("ℹ️ درباره", fontWeight = FontWeight.Bold, fontSize = 13.sp)
             Card(shape = RoundedCornerShape(14.dp), colors = CardDefaults.cardColors(containerColor = Color(0xFF141A2E))) {
                 Column(Modifier.padding(14.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
-                    Text("JARVIS Android v2.1.0", fontWeight = FontWeight.Bold, fontSize = 13.sp)
+                    Text("JARVIS Android v2.2.0", fontWeight = FontWeight.Bold, fontSize = 13.sp)
                     Text("Apache 2.0 • الهام‌گرفته از OpenJarvis (Stanford)", fontSize = 11.sp, color = Color.White.copy(alpha = 0.6f))
                     Text("github.com/Pillow1243/Jarvis", fontSize = 11.sp, color = Color(0xFF00D4FF))
                 }

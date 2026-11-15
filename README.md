@@ -4,7 +4,7 @@
 
 <img src="assets/jarvis_horizontal_logo.png" width="800" alt="JARVIS — یار هوشمند شما"/>
 
-![JARVIS](https://img.shields.io/badge/JARVIS-v2.1.0-00D4FF?style=for-the-badge&logo=android&logoColor=white)
+![JARVIS](https://img.shields.io/badge/JARVIS-v2.2.0-00D4FF?style=for-the-badge&logo=android&logoColor=white)
 ![Android](https://img.shields.io/badge/Android-13%2B-3DDC84?style=for-the-badge&logo=android&logoColor=white)
 ![Kotlin](https://img.shields.io/badge/Kotlin-2.0-7F52FF?style=for-the-badge&logo=kotlin&logoColor=white)
 ![Compose](https://img.shields.io/badge/Jetpack_Compose-Material3-4285F4?style=for-the-badge&logo=jetpackcompose&logoColor=white)
@@ -79,7 +79,7 @@
 | اتوماسیون‌های زمان‌دار | ✅ واقعی (WorkManager) | `AutomationEngine`؛ دیسپچر سمت backend در حال توسعه |
 | APK ریلیز | ✅ واقعی و بازتولیدپذیر | ساخته‌شده با CI + Gradle واقعی؛ هیچ فایل placeholder در مخزن نیست |
 
-> آخرین بار این جدول در **v2.1.0** بازبینی و تأیید شد.
+> آخرین بار این جدول در **v2.2.0** بازبینی و تأیید شد.
 
 ## 🚀 نصب سریع
 
@@ -272,7 +272,7 @@ APK ریلیز مستقیماً با Gradle واقعی در CI ساخته می�
 - `jarvis-vX.Y.Z-release.apk` — نسخه بهینه (R8) با امضای keystore پروژه (یا debug-signed وقتی secrets تنظیم نشده باشد)
 - `jarvis-vX.Y.Z-debug.apk` — نسخه دیباگ
 
-انتشار با تگ: `git tag v2.1.0 && git push origin v2.1.0` — جزئیات در [docs/RELEASING.md](docs/RELEASING.md).
+انتشار با تگ: `git tag v2.2.0 && git push origin v2.2.0` — جزئیات در [docs/RELEASING.md](docs/RELEASING.md).
 
 ساخت دستی:
 

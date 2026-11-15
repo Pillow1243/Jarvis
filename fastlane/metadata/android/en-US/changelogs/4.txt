@@ -1,0 +1,4 @@
+• First release with real CI-built APKs (Gradle + R8) — previous releases shipped no APKs
+• Fixed Kotlin compile errors, Hilt runtime crash, widget tap, accessibility node leaks
+• Backend slimmed (~2GB lighter), real /metrics, enforced device-token auth
+• Chat redesigned with auto-scroll; mic permission request flow; redesigned bubbles
