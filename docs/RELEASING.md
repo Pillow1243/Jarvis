@@ -64,8 +64,8 @@ git push origin vX.Y.Z
 ## بررسی APK دانلودشده
 
 ```bash
-sha256sum -c jarvis-v2.1.0-release.apk.sha256
-unzip -l jarvis-v2.1.0-release.apk | head
+sha256sum -c jarvis-v2.2.0-release.apk.sha256
+unzip -l jarvis-v2.2.0-release.apk | head
 ```
 
 ## Play Store (بعد از بسته‌بندی)

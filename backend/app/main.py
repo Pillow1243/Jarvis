@@ -89,7 +89,7 @@ def create_app() -> FastAPI:
         metrics["requests_total"] += 1
         metrics["latency_sum_ms"] += elapsed_ms
         response.headers["X-Process-Time"] = f"{elapsed_ms / 1000:.4f}"
-        response.headers["X-Powered-By"] = "JARVIS-Android/2.1"
+        response.headers["X-Powered-By"] = "JARVIS-Android/2.2"
         return response
 
     # Routers

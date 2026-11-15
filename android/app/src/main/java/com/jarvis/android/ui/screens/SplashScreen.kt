@@ -59,7 +59,7 @@ fun SplashScreen(nav: NavController) {
             CircularProgressIndicator(color = JarvisColors.NeonCyan, strokeWidth = 2.dp, modifier = Modifier.size(28.dp))
         }
         Text(
-            "v2.1 • ساخته شده با ❤️ برای اندروید",
+            "v2.2 • ساخته شده با ❤️ برای اندروید",
             color = Color.White.copy(alpha = 0.4f),
             fontSize = 10.sp,
             modifier = Modifier.align(Alignment.BottomCenter).padding(bottom = 28.dp)
