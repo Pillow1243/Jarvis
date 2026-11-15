@@ -98,7 +98,7 @@ class JarvisAccessibilityService : AccessibilityService() {
                 val args = Bundle().apply { putCharSequence(AccessibilityNodeInfo.ACTION_ARGUMENT_SET_TEXT_CHARSEQUENCE, text) }
                 val ok = focused.performAction(AccessibilityNodeInfo.ACTION_SET_TEXT, args)
                 if (submit && ok) {
-                    focused.performAction(AccessibilityNodeInfo.ACTION_IME_ENTER)
+                    focused.performAction(AccessibilityNodeInfo.AccessibilityAction.ACTION_IME_ENTER.id)
                 }
                 ok
             } finally {
