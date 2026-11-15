@@ -1,0 +1,10 @@
+name: Bug Report
+description: گزارش باگ
+body:
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: چه اتفاقی افتاد؟
+      placeholder: توضیح ...
+    validations:
+      required: true

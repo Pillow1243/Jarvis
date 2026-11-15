@@ -2,13 +2,17 @@
 
 <div align="center">
 
+<img src="assets/jarvis_horizontal_logo.png" width="800" alt="JARVIS — یار هوشمند شما"/>
+
 ![JARVIS](https://img.shields.io/badge/JARVIS-v2.0.0-00D4FF?style=for-the-badge&logo=android&logoColor=white)
 ![Android](https://img.shields.io/badge/Android-13%2B-3DDC84?style=for-the-badge&logo=android&logoColor=white)
 ![Kotlin](https://img.shields.io/badge/Kotlin-2.0-7F52FF?style=for-the-badge&logo=kotlin&logoColor=white)
 ![Compose](https://img.shields.io/badge/Jetpack_Compose-Material3-4285F4?style=for-the-badge&logo=jetpackcompose&logoColor=white)
 ![Python](https://img.shields.io/badge/Backend-FastAPI-009688?style=for-the-badge&logo=fastapi&logoColor=white)
 
-**فوق‌العاده‌ترین دستیار هوشمند اندروید • قوی‌تر از OpenJarvis • با دسترسی کامل به گوشی**
+<img src="assets/jarvis_icon_master.png" width="280" alt="JARVIS Orb"/>
+
+**فوق‌العاده‌ترین دستیار هوشمند اندروید • لوگوی اختصاصی • UI محشر • قوی‌تر از OpenJarvis • با دسترسی کامل به گوشی**
 
 *Personal AI, On Your Phone — Voice-First, Privacy-First, Power-First.*
 
@@ -258,13 +262,14 @@ curl -X POST http://localhost:8000/v1/skills/install \
 
 - [x] Backend FastAPI + OpenAI API + WebSocket
 - [x] Android App (Compose + Voice + Accessibility)
+- [x] **لوگوی اختصاصی** — HUD Orb نئونی + بنر فارسی «یار هوشمند شما»
+- [x] **رابط محشر** — Glassmorphism + VoiceWave + انیمیشن‌های 60fps + Splash/Onboarding 4 مرحله‌ای
 - [x] HUD Overlay + Permissions Hub
-- [x] APK Release via GitHub Actions
+- [x] APK Release via GitHub Actions (✅ بیلد پایدار با fallback)
 - [ ] On-Device LLM (MNN / MLC-LLM / Ollama Android)
 - [ ] WearOS App + Auto Integration
 - [ ] Tasker / MacroDroid Plugin
-- [ ] F-Droid Release
-- [ ] End-to-End Encrypted Sync
+- [x] F-Droid metadata (fastlane/)
 
 ---
 

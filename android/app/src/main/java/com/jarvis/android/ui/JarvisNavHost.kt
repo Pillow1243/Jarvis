@@ -7,6 +7,7 @@ import androidx.navigation.compose.rememberNavController
 import com.jarvis.android.ui.screens.*
 
 sealed class Screen(val route: String) {
+    object Splash : Screen("splash")
     object Onboarding : Screen("onboarding")
     object Chat : Screen("chat")
     object Permissions : Screen("permissions")
@@ -19,7 +20,8 @@ sealed class Screen(val route: String) {
 @Composable
 fun JarvisNavHost() {
     val nav = rememberNavController()
-    NavHost(navController = nav, startDestination = Screen.Onboarding.route) {
+    NavHost(navController = nav, startDestination = Screen.Splash.route) {
+        composable(Screen.Splash.route) { SplashScreen(nav) }
         composable(Screen.Onboarding.route) { OnboardingScreen(nav) }
         composable(Screen.Chat.route) { ChatScreen(nav) }
         composable(Screen.Permissions.route) { PermissionsHubScreen(nav) }
