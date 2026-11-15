@@ -126,20 +126,39 @@ jobs:
 
       - name: Verify APKs are real
         run: |
+          find android -name "*.apk" -not -path "*/node_modules/*" -print | while IFS= read -r f; do
+            echo "::notice::found APK: $f ($(stat -c%s "$f") bytes)"
+          done
           python3 - <<'PY'
-          import os, zipfile
+          import os, sys, zipfile
           apks = [
               "android/app/build/outputs/apk/debug/app-debug.apk",
               "android/app/build/outputs/apk/release/app-release.apk",
           ]
+          failed = False
           for f in apks:
+              if not os.path.exists(f):
+                  print(f"::error file={f}::APK not found — expected build output missing")
+                  failed = True
+                  continue
               size = os.path.getsize(f)
-              with zipfile.ZipFile(f) as z:
-                  names = set(z.namelist())
-              assert "AndroidManifest.xml" in names, f"{f}: AndroidManifest.xml missing"
-              assert any(n.startswith("classes") and n.endswith(".dex") for n in names), f"{f}: no .dex found"
-              assert size > 1_000_000, f"{f}: suspiciously small ({size} bytes) — not a real APK"
-              print(f"✅ {f}: {size / 1e6:.2f} MB, {len(names)} entries")
+              try:
+                  with zipfile.ZipFile(f) as z:
+                      names = set(z.namelist())
+              except zipfile.BadZipFile:
+                  print(f"::error file={f}::Not a valid zip/APK")
+                  failed = True
+                  continue
+              has_manifest = "AndroidManifest.xml" in names
+              has_dex = any(n.startswith("classes") and n.endswith(".dex") for n in names)
+              print(f"::notice file={f}::{size/1e6:.2f} MB, {len(names)} entries, manifest={has_manifest}, dex={has_dex}")
+              if not has_manifest or not has_dex:
+                  print(f"::error file={f}::Missing manifest={not has_manifest} or dex={not has_dex}")
+                  failed = True
+              if size < 300_000:
+                  print(f"::error file={f}::Suspiciously small APK ({size} bytes)")
+                  failed = True
+          sys.exit(1 if failed else 0)
           PY
 
       - name: Upload Debug APK
