@@ -5,4 +5,5 @@
     <color name="jarvis_accent">#7F52FF</color>
     <color name="jarvis_success">#00E676</color>
     <color name="jarvis_warning">#FFAB00</color>
+    <color name="jarvis_glass">#14FFFFFF</color>
 </resources>

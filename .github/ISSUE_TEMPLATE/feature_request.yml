@@ -1,0 +1,10 @@
+name: Feature Request
+description: پیشنهاد ویژگی
+body:
+  - type: textarea
+    id: idea
+    attributes:
+      label: ایده
+      placeholder: پیشنهاد ...
+    validations:
+      required: true
