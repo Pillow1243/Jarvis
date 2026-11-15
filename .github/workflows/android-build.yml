@@ -51,8 +51,19 @@ jobs:
           distribution: temurin
           java-version: "17"
 
-      - name: Set up Android SDK
-        uses: android-actions/setup-android@v3
+      - name: Ensure Android SDK & licenses
+        run: |
+          echo "ANDROID_HOME=$ANDROID_HOME"
+          SDK_DIR="${ANDROID_HOME:-${ANDROID_SDK_ROOT:-/usr/local/lib/android/sdk}}"
+          echo "SDK_DIR=$SDK_DIR"
+          ls "$SDK_DIR" && ls "$SDK_DIR/platforms" || true
+          # Accept licenses via sdkmanager when available…
+          yes | "$SDK_DIR/cmdline-tools/latest/bin/sdkmanager" --licenses >/dev/null 2>&1 || true
+          # …and also materialize the well-known license hashes (idempotent)
+          mkdir -p "$SDK_DIR/licenses"
+          printf '\n8933bad161af4178b1185d1a37fbf41ea5269c55\nd56f5187479451eabf01fb78af6dfcb131a6481e\n24333f8a63b6825ea9c5514f83c2829b004d1fee\nd975f751698a77b662f1254ddbeed3901e976f9a\n' > "$SDK_DIR/licenses/android-sdk-license"
+          printf '\n84831b9409646a918e30573bab4c9c03d6b0d7db\n' > "$SDK_DIR/licenses/android-sdk-preview-license"
+          cat "$SDK_DIR/licenses/android-sdk-license" | head -2
 
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v4
