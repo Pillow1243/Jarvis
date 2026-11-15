@@ -86,23 +86,25 @@ jobs:
         working-directory: android
         run: |
           set -e
-          ./gradlew testDebugUnitTest --stacktrace --console=plain 2>&1 | tee build-test.log || {
-            grep -E "^(e: |error|FAILURE|What went wrong|> Task .*FAILED|Caused by|.*\.kt:[0-9]+:[0-9]+)" build-test.log | tail -40 | while IFS= read -r line; do
-              echo "::error::$line"
-            done
+          if ! ./gradlew testDebugUnitTest --stacktrace --console=plain --info > build-test.log 2>&1; then
+            tail -c 6000 build-test.log | while IFS= read -r line; do echo "::error::$line"; done
             exit 1
-          }
+          fi
+          echo "::notice::unit-test log bytes: $(stat -c%s build-test.log)"
+          grep -E "Task :app:(compileDebugKotlin|testDebugUnitTest)" build-test.log | tail -10 | while IFS= read -r line; do echo "::notice::$line"; done
+          tail -c 2500 build-test.log | while IFS= read -r line; do echo "::notice::$line"; done
 
       - name: Build Debug APK
         working-directory: android
         run: |
           set -e
-          ./gradlew assembleDebug --stacktrace --console=plain 2>&1 | tee build-debug.log || {
-            grep -E "^(e: |error|FAILURE|What went wrong|> Task .*FAILED|Caused by|.*\.kt:[0-9]+:[0-9]+)" build-debug.log | tail -40 | while IFS= read -r line; do
-              echo "::error::$line"
-            done
+          if ! ./gradlew assembleDebug --stacktrace --console=plain --info > build-debug.log 2>&1; then
+            tail -c 6000 build-debug.log | while IFS= read -r line; do echo "::error::$line"; done
             exit 1
-          }
+          fi
+          echo "::notice::debug log bytes: $(stat -c%s build-debug.log)"
+          grep -E "Task :app:(assembleDebug|packageDebug|compileDebugKotlin)" build-debug.log | tail -10 | while IFS= read -r line; do echo "::notice::$line"; done
+          tail -c 2500 build-debug.log | while IFS= read -r line; do echo "::notice::$line"; done
 
       - name: Build Release APK
         working-directory: android
@@ -117,12 +119,13 @@ jobs:
             echo "⚠️ No keystore — release APK will be debug-signed"
           fi
           set -e
-          ./gradlew assembleRelease --stacktrace --console=plain 2>&1 | tee build-release.log || {
-            grep -E "^(e: |error|FAILURE|What went wrong|> Task .*FAILED|Caused by|.*\.kt:[0-9]+:[0-9]+)" build-release.log | tail -40 | while IFS= read -r line; do
-              echo "::error::$line"
-            done
+          if ! ./gradlew assembleRelease --stacktrace --console=plain --info > build-release.log 2>&1; then
+            tail -c 6000 build-release.log | while IFS= read -r line; do echo "::error::$line"; done
             exit 1
-          }
+          fi
+          echo "::notice::release log bytes: $(stat -c%s build-release.log)"
+          grep -E "Task :app:(assembleRelease|packageRelease|minifyReleaseWithR8|compileReleaseKotlin)" build-release.log | tail -10 | while IFS= read -r line; do echo "::notice::$line"; done
+          tail -c 2500 build-release.log | while IFS= read -r line; do echo "::notice::$line"; done
 
       - name: Verify APKs are real
         run: |
