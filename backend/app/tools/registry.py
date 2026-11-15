@@ -4,11 +4,11 @@ Compatible with OpenAI function calling.
 """
 from __future__ import annotations
 
-from typing import Any, Callable, Dict, List
+from typing import Any
 
 # ── Tool Definitions (OpenAI-compatible) ──────────────────────────────
 
-TOOL_DEFINITIONS: List[Dict[str, Any]] = [
+TOOL_DEFINITIONS: list[dict[str, Any]] = [
     # ── Device Control ──────────────────────────────
     {
         "type": "function",
@@ -398,17 +398,17 @@ TOOL_DEFINITIONS: List[Dict[str, Any]] = [
 ]
 
 
-def get_all_tools() -> List[Dict[str, Any]]:
+def get_all_tools() -> list[dict[str, Any]]:
     return TOOL_DEFINITIONS
 
 
-def get_tool_names() -> List[str]:
+def get_tool_names() -> list[str]:
     return [t["function"]["name"] for t in TOOL_DEFINITIONS]
 
 
 # ── Mock Executors (for backend without real device) ─────────────────
 
-async def execute_tool(name: str, arguments: Dict[str, Any], device_id: str = "default") -> Dict[str, Any]:
+async def execute_tool(name: str, arguments: dict[str, Any], device_id: str = "default") -> dict[str, Any]:
     """Execute tool — in production, forwards to Android device via WebSocket."""
     # This is the server-side stub; real execution happens on device.
     # We return a structured result that the agent can reason over.

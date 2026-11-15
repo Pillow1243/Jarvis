@@ -1,10 +1,10 @@
+
 from fastapi import APIRouter
 from pydantic import BaseModel
-from typing import List, Optional
 
 router = APIRouter()
 
-_memories: List[dict] = []
+_memories: list[dict] = []
 
 class RememberRequest(BaseModel):
     key: str

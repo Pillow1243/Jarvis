@@ -18,6 +18,7 @@ import androidx.navigation.NavController
 
 data class AutomationItem(val id: String, val name: String, val trigger: String, val action: String, val enabled: Boolean)
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AutomationsScreen(nav: NavController) {
     var items by remember {

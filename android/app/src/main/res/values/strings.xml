@@ -1,9 +1,12 @@
 <resources>
     <string name="app_name">JARVIS</string>
+    <string name="widget_description">میانبر صحبت با جارویس</string>
     <string name="jarvis_greeting">سلام، من جارویس هستم 👋</string>
     <string name="tap_to_speak">برای صحبت ضربه بزن</string>
     <string name="listening">دارم گوش می‌دم…</string>
     <string name="thinking">جارویس داره فکر می‌کنه…</string>
+
+    <!-- Permissions hub -->
     <string name="permission_title">دسترسی‌های جارویس</string>
     <string name="permission_desc">برای کنترل کامل گوشی، این دسترسی‌ها لازمند — همه اختیاری و قابل لغو هستند.</string>
     <string name="accessibility_title">♿ دسترسی‌پذیری — کنترل صفحه</string>
@@ -16,6 +19,8 @@
     <string name="mic_desc">دستیار صوتی و Wake Word</string>
     <string name="enable">فعال‌سازی</string>
     <string name="enabled">✅ فعال</string>
+
+    <!-- Screens -->
     <string name="chat_hint">به جارویس بگو… (مثلاً: تلگرام رو باز کن)</string>
     <string name="settings">تنظیمات</string>
     <string name="automations">اتوماسیون‌ها</string>

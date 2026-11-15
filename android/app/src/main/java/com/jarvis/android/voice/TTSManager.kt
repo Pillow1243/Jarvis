@@ -5,9 +5,13 @@ import android.speech.tts.TextToSpeech
 import java.util.Locale
 
 class TTSManager(context: Context) {
-    private var tts: TextToSpeech? = TextToSpeech(context) { status ->
-        if (status == TextToSpeech.SUCCESS) {
-            tts?.language = Locale("fa", "IR")
+    private var tts: TextToSpeech? = null
+
+    init {
+        tts = TextToSpeech(context) { status ->
+            if (status == TextToSpeech.SUCCESS) {
+                tts?.language = Locale("fa", "IR")
+            }
         }
     }
 

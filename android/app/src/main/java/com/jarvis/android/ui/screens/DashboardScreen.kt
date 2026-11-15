@@ -16,6 +16,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DashboardScreen(nav: NavController) {
     Scaffold(topBar = {
@@ -35,7 +36,7 @@ fun DashboardScreen(nav: NavController) {
                 Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
                     Text("📊 مصرف انرژی (الهام از OpenJarvis)", fontWeight = FontWeight.Bold, fontSize = 13.sp)
                     Text("جارویس به‌صورت هوشمند بین مدل محلی (Ollama) و ابری (GPT-4o) مسیریابی می‌کند تا هزینه و مصرف باتری بهینه بماند.", fontSize = 11.sp, color = Color.White.copy(alpha = 0.6f))
-                    LinearProgressIndicator(progress = 0.72f, modifier = Modifier.fillMaxWidth().height(8.dp))
+                    LinearProgressIndicator(progress = { 0.72f }, modifier = Modifier.fillMaxWidth().height(8.dp))
                     Text("72% درخواست‌ها با مدل محلی پاسخ داده شد — صرفه‌جویی: ~$4.30", fontSize = 11.sp, color = Color(0xFF00E676))
                 }
             }

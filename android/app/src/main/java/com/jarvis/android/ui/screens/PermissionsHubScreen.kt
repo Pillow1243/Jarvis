@@ -1,7 +1,12 @@
 package com.jarvis.android.ui.screens
 
+import android.Manifest
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.provider.Settings
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.content.ContextCompat
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -20,9 +25,18 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.jarvis.android.ui.Screen
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PermissionsHubScreen(nav: NavController) {
     val ctx = LocalContext.current
+    var micGranted by remember {
+        mutableStateOf(
+            ContextCompat.checkSelfPermission(ctx, Manifest.permission.RECORD_AUDIO) == PackageManager.PERMISSION_GRANTED
+        )
+    }
+    val micLauncher = rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) { granted ->
+        micGranted = granted
+    }
     Scaffold(
         topBar = {
             TopAppBar(
@@ -48,8 +62,8 @@ fun PermissionsHubScreen(nav: NavController) {
 
             PermissionCard(
                 icon = "🎤", title = "میکروفون", desc = "برای دستیار صوتی و Wake Word «هی جارویس»",
-                required = true, status = "در انتظار",
-                onEnable = { /* request RECORD_AUDIO */ }
+                required = true, status = if (micGranted) "✅ فعال" else "در انتظار",
+                onEnable = { micLauncher.launch(Manifest.permission.RECORD_AUDIO) }
             )
             PermissionCard(
                 icon = "♿", title = "دسترسی‌پذیری", desc = "خواندن صفحه، کلیک، تایپ، اتوماسیون هر اپ — قلب جارویس",

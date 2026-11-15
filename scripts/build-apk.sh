@@ -1,27 +1,25 @@
 #!/usr/bin/env bash
-set -e
-# Build JARVIS APK locally
+# Build JARVIS APK locally.
+# Requires: JDK 17+ and Android SDK (ANDROID_HOME or android/local.properties).
 # Usage: ./scripts/build-apk.sh [--release|--debug]
+set -euo pipefail
 
 MODE="debug"
-if [[ "$1" == "--release" ]]; then MODE="release"; fi
+if [[ "${1:-}" == "--release" ]]; then MODE="release"; fi
 
-echo "🤖 Building JARVIS APK ($MODE)..."
-cd "$(dirname "$0")/../android"
+ROOT="$(cd "$(dirname "$0")/.." && pwd)"
+cd "$ROOT/android"
 
-if [ ! -f gradlew ]; then
-  echo "⚙️ Generating Gradle wrapper..."
-  gradle wrapper --gradle-version 8.6
-fi
+if [[ ! -x gradlew ]]; then chmod +x gradlew; fi
 
-chmod +x gradlew
-
+echo "🤖 Building JARVIS ($MODE)…"
 if [[ "$MODE" == "release" ]]; then
   ./gradlew assembleRelease
-  echo "✅ APK: app/build/outputs/apk/release/app-release.apk"
+  APK="app/build/outputs/apk/release/app-release.apk"
 else
   ./gradlew assembleDebug
-  echo "✅ APK: app/build/outputs/apk/debug/app-debug.apk"
+  APK="app/build/outputs/apk/debug/app-debug.apk"
 fi
 
-ls -lh app/build/outputs/apk/*/*.apk 2>/dev/null || true
+echo "✅ APK: $ROOT/android/$APK"
+ls -lh "$APK"

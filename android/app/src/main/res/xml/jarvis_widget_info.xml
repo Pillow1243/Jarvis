@@ -6,4 +6,5 @@
     android:previewImage="@drawable/ic_jarvis_tile"
     android:initialLayout="@layout/widget_jarvis"
     android:widgetCategory="home_screen"
-    android:resizeMode="horizontal|vertical" />
+    android:resizeMode="horizontal|vertical"
+    android:description="@string/widget_description" />

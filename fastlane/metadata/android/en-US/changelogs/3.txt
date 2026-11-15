@@ -1,0 +1,4 @@
+• First release built by real CI (Gradle + R8) — no placeholder artifacts
+• Fixed Kotlin compile errors, Hilt runtime crash, widget tap, memory leaks
+• Backend slimmed (~2GB lighter), real /metrics, JWT device-token enforcement
+• Chat bubbles redesigned with auto-scroll; mic permission request flow
